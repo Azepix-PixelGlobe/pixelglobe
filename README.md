@@ -235,5 +235,5 @@ Join us on Discord for support, events and faction wars:
 
 <p align="center">
   <b>Place pixels. Create worlds. Dominate.</b><br>
-  <sub>Made with 🟦🟥🟨🟩 — PixelGlobe © 2026</sub>
+  <sub>Made by Azepix — PixelGlobe © 2026</sub>
 </p>
