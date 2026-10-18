@@ -1,0 +1,37 @@
+# PixelGlobe Configuration — COPY THIS TO config.ini AND FILL IN
+# See README.md / doc/CONFIGURATION.md for docs
+
+PORT = 8080
+HOST = 127.0.0.1
+
+REDIS_URL = redis://localhost:6379
+
+MARIADB_HOST = localhost
+MARIADB_USER = pixelglobe
+MARIADB_PW = changeme
+MARIADB_DATABASE = pixelglobe
+
+COOKIE_SECRET = change-me-to-random-string-min-32-chars
+
+USE_PROXYCHECK = no
+PROXYCHECK_KEY = 
+BLOCK_PROXIES = yes
+ENTRY_CHECK_ENABLED = yes
+ENTRY_CHECK_TIME = 12
+ADMIN_IDS = 1
+
+# OAuth (optional)
+DISCORD_CLIENT_ID = 
+DISCORD_CLIENT_SECRET = 
+DISCORD_R_URI = 
+GOOGLE_CLIENT_ID = 
+GOOGLE_CLIENT_SECRET = 
+
+# CDN / Backup
+CDN_URL = 
+BACKUP_URL = 
+
+# Features
+FISHING = no
+HOURLY_EVENT = no
+USE_XREALIP = no

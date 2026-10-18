@@ -1,0 +1,191 @@
+:root {
+  --control-bg-selected: #c1c1c1;
+  --control-bg-highlight: #dedede;
+  --control-bg: #a6a4a4;
+  --caption-txt-color: #b1b1b1;
+  --error-txt-color: #fe5a5a;
+  --border-seperator-color: #68686a;
+  --menu-bg: rgba(169, 169, 169, 0.95);
+}
+
+a:link {
+  color: #91ffe0;
+}
+
+a:visited {
+  color: #b5d06d;
+}
+
+a:hover {
+  color: #d9f68a;
+}
+
+.modallink {
+  color: #91ffe0;
+}
+
+.modallink:hover {
+  color: #d9f68a;
+}
+
+.menu, .menuelement {
+  border-radius: 10px;
+}
+
+.inarea {
+  border-color: #d5d5d5;
+}
+
+.deletelistitem.selected {
+  background-color: #8c5e5e;
+}
+
+.deletelistitem.unselected:hover {
+  background-color: #7d5f5f;
+}
+
+.tab-list-item {
+  color: #e2e2e2; 
+}
+.tab-list-item.active {
+  background-color: #7b7b7b;
+  color: white;
+}
+.tab-list-item:not(.active):hover {
+  background-color: #636363;
+}
+
+tr:nth-child(even) {
+  background-color: #505050;
+}
+
+.window {
+  background-color: rgba(59, 59, 59, 0.98);
+  color: #f4f4f4;
+}
+.window {
+  border-radius: 5px;
+}
+
+.win-topbar {
+  color: black;
+}
+
+.win-topbtn:hover {
+  background-color: #8b8b8b;
+}
+
+.channeldd-category {
+  border-radius: 3px;
+}
+
+.channeldd {
+  border-radius: 5px;
+}
+
+.actionbuttons, .coorbox, .onlinebox, .cooldownbox, .historyselect {
+  background-color: rgba(59, 59, 59, 0.8);
+  color: #f4f4f4;
+  border-radius: 21px;
+}
+
+#pencilbutton.ppencil {
+  background-color: rgba(131, 147, 19, 0.8);
+}
+#pencilbutton.phistory {
+  background-color: rgba(31, 84, 111, 0.8);
+}
+#pencilbutton.poverlay {
+  background-color: rgba(117, 31, 31, 0.8);
+}
+
+.modal, .Alert, .popup-modal {
+  background: #444242 none repeat scroll 0 0;;
+  color: #f4f4f4;
+}
+
+.modal, .popup-modal {
+  border-radius: 21px;
+}
+
+.popup-fsbtn {
+  color: #666363;
+  border-radius: 0 21px 0 0;
+  background: linear-gradient(45deg, transparent 0%, transparent 50%, #373636 60%);
+}
+.popup-fsbtn:hover {
+  color: #bfb9b9;
+}
+
+.Alert {
+  border-radius: 12px;
+}
+
+.modal-content, .win-content, .popup-content, .baninfo {
+  color: #f4f4f4;
+}
+
+h3, h4 {
+  color: #d7e5fb;
+}
+
+.modaldesc {
+  color: hsla(220, 100%, 95.3%, 0.6);
+}
+
+.modaldivider {
+  background-color: hsla(216, 4%, 74%, .3);
+}
+
+.modalinfo, .tmpitm-desc span {
+  color: #ddd;
+}
+
+.modalcvtext, .tmpitm-desc {
+  color: hsla(220, 100%, 95.3%, 0.6);
+}
+
+.overlay {
+  background-color: rgba(187, 187, 187, 0.75);
+}
+
+.chatname {
+  background-color: #434648;
+}
+.mention {
+  background-color: #484643;
+}
+.chatmsg:hover {
+  background-color: #2525252b;
+}
+.msg {
+  color: #f3f3f3;
+}
+.msg.info{
+  color: #ff91a6;
+}
+.msg.event{
+  color: #9dc8ff;
+}
+.msg.greentext{
+  color: #94ff94;
+}
+.mdlink-button {
+  color: #fff4bd;
+}
+
+.chatlink {
+  color: #f9edde;
+}
+
+.statvalue {
+  color: #ecc9ff;
+}
+
+.actionbuttons:hover, .onlinebox:hover, .coorbox:hover {
+  background-color: #363637;
+}
+
+.c-last-hour {
+  color: lime;
+}

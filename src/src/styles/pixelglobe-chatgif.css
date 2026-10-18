@@ -1,0 +1,226 @@
+/* ==========================================================================
+   PixelGlobe — sohbet: GIF arayıcısı (KLIPY)
+   --------------------------------------------------------------------------
+   Tüm kurallar html.pg-black altında: tema katmanı tek satırla kapatılabilir.
+   Sohbet penceresinin sağ alt köşesine, yazı alanının üstüne açılır.
+   ========================================================================== */
+
+/* GIF paneli sohbet kutusuna göre konumlanır (pencere içinde doğru yerde) */
+html.pg-black .chat-container {
+  position: relative;
+}
+
+html.pg-black .pg-gif-panel {
+  position: absolute;
+  right: 10px;
+  bottom: 82px;
+  z-index: 60;
+  width: min(430px, calc(100% - 20px));
+  max-height: min(430px, 62vh);
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid rgba(150, 200, 255, 0.22);
+  background: radial-gradient(120% 120% at 15% 0%, #131a2b 0%, #080b13 60%, #05070d 100%);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.72);
+  overflow: hidden;
+  animation: pg-gif-in 0.16s ease-out;
+}
+
+html.pg-black .pg-gif-panel--left { left: 10px; right: auto; }
+
+@keyframes pg-gif-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------------- başlık */
+html.pg-black .pg-gif-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(120, 150, 200, 0.16);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+html.pg-black .pg-gif-logo {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  padding: 3px 7px;
+  border-radius: 7px;
+  color: #0b0f17;
+  background: linear-gradient(180deg, #7fd8ff, #3ba7e0);
+}
+
+html.pg-black .pg-gif-search {
+  flex: 1 1 auto;
+  min-width: 40px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #eaf0f8;
+  border-radius: 9px;
+  border: 1px solid rgba(130, 160, 210, 0.24);
+  background: rgba(8, 11, 19, 0.86);
+  outline: none;
+}
+
+html.pg-black .pg-gif-search:focus {
+  border-color: rgba(127, 216, 255, 0.7);
+  box-shadow: 0 0 0 2px rgba(127, 216, 255, 0.14);
+}
+
+html.pg-black .pg-gif-close {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  line-height: 1;
+  font-size: 13px;
+  cursor: pointer;
+  color: #cdd8e8;
+  border-radius: 8px;
+  border: 1px solid rgba(130, 160, 210, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+html.pg-black .pg-gif-close:hover { background: #c0392b; color: #fff; }
+
+/* ------------------------------------------------------------------ etiketler */
+html.pg-black .pg-gif-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px 4px;
+}
+
+html.pg-black .pg-gif-tag {
+  font-size: 11.5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #cfe0f5;
+  border: 1px solid rgba(130, 160, 210, 0.22);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html.pg-black .pg-gif-tag:hover { border-color: rgba(127, 216, 255, 0.6); color: #fff; }
+html.pg-black .pg-gif-tag.is-on {
+  background: rgba(127, 216, 255, 0.16);
+  border-color: rgba(127, 216, 255, 0.72);
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------ ızgara */
+html.pg-black .pg-gif-grid {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px 10px;
+  min-height: 120px;
+}
+
+html.pg-black .pg-gif-card {
+  padding: 0;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(130, 160, 210, 0.16);
+  background: #0a0e17;
+  aspect-ratio: 4 / 3;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+html.pg-black .pg-gif-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(127, 216, 255, 0.75);
+}
+
+html.pg-black .pg-gif-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+html.pg-black .pg-gif-empty,
+html.pg-black .pg-gif-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #93a0b4;
+  font-size: 12.5px;
+  padding: 26px 10px;
+}
+
+html.pg-black .pg-gif-empty--err { color: #ffb2a8; }
+
+html.pg-black .pg-gif-retry {
+  display: block;
+  margin: 10px auto 0;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid rgba(255, 130, 110, 0.5);
+  background: rgba(255, 90, 70, 0.16);
+}
+
+/* -------------------------------------------------------------------- altlık */
+html.pg-black .pg-gif-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-top: 1px solid rgba(120, 150, 200, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+html.pg-black .pg-gif-brand {
+  font-size: 10.5px;
+  letter-spacing: 0.6px;
+  color: #7d8ba0;
+  text-transform: uppercase;
+}
+
+html.pg-black .pg-gif-more {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #cfe0f5;
+  border: 1px solid rgba(130, 160, 210, 0.24);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html.pg-black .pg-gif-more:disabled { opacity: 0.5; cursor: default; }
+
+/* sohbetteki GIF düğmesi */
+html.pg-black .pg-gif-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  padding: 0;
+  cursor: pointer;
+  color: #cfe0f5;
+  border: none;
+  background: transparent;
+}
+
+html.pg-black .pg-gif-btn.is-on { color: #7fd8ff; }
+
+/* küçük ekran: panel tam genişlik */
+@media (max-width: 560px) {
+  html.pg-black .pg-gif-panel {
+    right: 6px;
+    left: 6px;
+    width: auto;
+    bottom: 74px;
+  }
+  html.pg-black .pg-gif-grid { grid-template-columns: repeat(2, 1fr); }
+}

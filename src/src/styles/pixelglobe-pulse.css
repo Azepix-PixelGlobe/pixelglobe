@@ -1,0 +1,1184 @@
+/* ==========================================================================
+   PixelGlobe Pulse — görev paneli, nabız kapsülü, komut paleti, bildirimler
+   --------------------------------------------------------------------------
+   Tüm kurallar html.pg-black altında: katman tek satırla kapatılabilir.
+   Görsel dil: siyah cam yüzeyler + altın vurgu (--pg-* değişkenleri
+   pixelglobe-black.css içinde tanımlı).
+   ========================================================================== */
+
+/* ------------------------------------------------------------ nabız kapsülü */
+
+/* --- konumlar JS'ten gelir (utils/pgDock.js): paletin üstüne binmez --- */
+html.pg-black {
+  --pg-pill-right: 16px;
+  --pg-pill-bottom: 76px;
+  --pg-panel-right: 16px;
+  --pg-panel-bottom: 126px;
+  --pg-panel-top: auto;
+  --pg-panel-maxw: 392px;
+  --pg-panel-maxh: 74vh;
+}
+
+html.pg-black .pg-pill {
+  position: fixed;
+  right: var(--pg-pill-right, 16px);
+  bottom: var(--pg-pill-bottom, 76px);
+  touch-action: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 193, 78, 0.42);
+  background: linear-gradient(180deg, rgba(26, 31, 46, 0.97), rgba(9, 11, 18, 0.98));
+  color: #f4e7c8;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  z-index: 21000;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(242, 193, 78, 0.08);
+  animation: pg-slide-up 0.4s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+html.pg-black .pg-pill:active {
+  cursor: grabbing;
+}
+
+html.pg-black .pg-pill:hover {
+  border-color: rgba(255, 212, 121, 0.85);
+  transform: translateY(-1px);
+}
+
+html.pg-black .pg-pill.open {
+  border-color: rgba(255, 212, 121, 1);
+  box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.16), 0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+html.pg-black .pg-pill-flame {
+  font-size: 16px;
+  filter: grayscale(1) brightness(1.6);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+html.pg-black .pg-pill-flame[data-streak='on'] {
+  filter: none;
+  animation: pg-flame 1.8s ease-in-out infinite;
+}
+
+html.pg-black .pg-pill-count {
+  color: #ffd479;
+}
+
+html.pg-black .pg-ring {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+}
+
+html.pg-black .pg-ring svg {
+  width: 22px;
+  height: 22px;
+  transform: rotate(-90deg);
+}
+
+html.pg-black .pg-ring circle {
+  fill: none;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+
+html.pg-black .pg-ring-bg {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+
+html.pg-black .pg-ring-fg {
+  stroke: #ffd479;
+  transition: stroke-dasharray 0.5s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+/* ------------------------------------------------------------------ panel */
+
+html.pg-black .pg-panel {
+  position: fixed;
+  right: var(--pg-panel-right, 16px);
+  bottom: var(--pg-panel-bottom, 126px);
+  top: var(--pg-panel-top, auto);
+  width: min(var(--pg-panel-maxw, 392px), calc(100vw - 24px));
+  max-height: min(var(--pg-panel-maxh, 74vh), 700px);
+  overflow: auto;
+  padding: 14px 15px 13px;
+  border-radius: 20px;
+  background: linear-gradient(165deg, rgba(20, 24, 36, 0.985), rgba(8, 10, 16, 0.99));
+  border: 1px solid rgba(242, 193, 78, 0.32);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65), 0 0 60px rgba(242, 193, 78, 0.05);
+  color: #e9edf8;
+  z-index: 21001;
+  animation: pg-panel-in 0.3s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  backdrop-filter: blur(9px);
+}
+
+html.pg-black .pg-panel-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.pg-black .pg-panel-title {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+html.pg-black .pg-panel-kicker {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #f2c14e;
+}
+
+html.pg-black .pg-panel-title strong {
+  font-size: 19px;
+  color: #fff;
+  line-height: 1.15;
+}
+
+html.pg-black .pg-panel-title em {
+  font-style: normal;
+  font-size: 12px;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-panel-econ {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html.pg-black .pg-coins {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffd479;
+  border: 1px solid rgba(242, 193, 78, 0.35);
+  background: rgba(242, 193, 78, 0.08);
+}
+
+html.pg-black .pg-icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #98a2bd;
+}
+
+html.pg-black .pg-icon-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 212, 121, 0.6);
+}
+
+/* --------------------------------------------------------------- xp barım */
+
+html.pg-black .pg-xp {
+  margin: 11px 0 12px;
+}
+
+html.pg-black .pg-bar {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+html.pg-black .pg-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd479, #f0ad2c);
+  box-shadow: 0 0 12px rgba(255, 212, 121, 0.45);
+  transition: width 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+html.pg-black .pg-bar.xp > span {
+  background: linear-gradient(90deg, #7fb6ff, #4d7ée8);
+  background: linear-gradient(90deg, #8fc2ff, #4d7ee8);
+  box-shadow: 0 0 12px rgba(120, 170, 255, 0.4);
+}
+
+html.pg-black .pg-xp-text {
+  display: block;
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: #8b96b8;
+}
+
+/* -------------------------------------------------- kapsül seri sayısı */
+html.pg-black .pg-pill-streak {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  color: #ffd479;
+  min-width: 12px;
+  text-align: center;
+}
+
+html.pg-black .pg-switch-label {
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- seri */
+
+html.pg-black .pg-streak {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  margin-bottom: 13px;
+  border-radius: 15px;
+  border: 1px solid rgba(242, 193, 78, 0.26);
+  background:
+    radial-gradient(120% 160% at 0% 0%, rgba(242, 193, 78, 0.14), transparent 60%),
+    linear-gradient(180deg, rgba(24, 28, 41, 0.9), rgba(11, 13, 20, 0.92));
+}
+
+html.pg-black .pg-streak-main {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+html.pg-black .pg-streak-flame {
+  font-size: 25px;
+  filter: grayscale(1) brightness(1.5);
+}
+
+html.pg-black .pg-streak-flame[data-on='1'] {
+  filter: none;
+  animation: pg-flame 1.6s ease-in-out infinite;
+}
+
+html.pg-black .pg-streak-main strong {
+  display: block;
+  font-size: 15px;
+  color: #fff;
+}
+
+html.pg-black .pg-streak-main em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-dots {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+
+html.pg-black .pg-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+html.pg-black .pg-dots i.on {
+  background: linear-gradient(180deg, #ffd479, #f0ad2c);
+  border-color: transparent;
+  box-shadow: 0 0 9px rgba(242, 193, 78, 0.6);
+}
+
+html.pg-black .pg-freeze {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #bfe4ff;
+  border: 1px solid rgba(120, 190, 255, 0.35);
+  background: rgba(120, 190, 255, 0.08);
+}
+
+/* ======================================================= NABIZ GRAFİĞİ */
+
+html.pg-black .pg-chart-wrap {
+  margin-bottom: 13px;
+}
+
+html.pg-black .pg-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  height: 108px;
+  padding: 10px 11px 6px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background:
+    radial-gradient(120% 140% at 50% 120%, rgba(242, 193, 78, 0.09), transparent 62%),
+    linear-gradient(180deg, rgba(19, 22, 32, 0.9), rgba(10, 12, 18, 0.92));
+}
+
+html.pg-black .pg-chart-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+  height: 100%;
+}
+
+html.pg-black .pg-chart-value {
+  font-size: 10px;
+  font-weight: 800;
+  color: #8b96b8;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+html.pg-black .pg-chart-track {
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+html.pg-black .pg-chart-track > i {
+  display: block;
+  width: 100%;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(180deg, #8fc2ff, #4d7ee8);
+  box-shadow: 0 0 10px rgba(120, 170, 255, 0.35);
+  transition: height 0.5s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+html.pg-black .pg-chart-col.today .pg-chart-track {
+  background: rgba(242, 193, 78, 0.12);
+}
+
+html.pg-black .pg-chart-col.today .pg-chart-track > i,
+html.pg-black .pg-chart-col.best .pg-chart-track > i {
+  background: linear-gradient(180deg, #ffd479, #f0ad2c);
+  box-shadow: 0 0 12px rgba(255, 212, 121, 0.5);
+}
+
+html.pg-black .pg-chart-col.best .pg-chart-value {
+  color: #ffd479;
+}
+
+html.pg-black .pg-chart-col.empty .pg-chart-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html.pg-black .pg-chart-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #8b96b8;
+  white-space: nowrap;
+}
+
+html.pg-black .pg-chart-col.today .pg-chart-label {
+  color: #fff;
+}
+
+html.pg-black .pg-chart-label b {
+  color: #f2c14e;
+  font-size: 13px;
+  line-height: 0;
+}
+
+html.pg-black .pg-chart-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 7px;
+  font-size: 11.5px;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-chart-best {
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: #ffd479;
+  font-weight: 700;
+}
+
+html.pg-black .pg-note.small {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  font-size: 11.5px;
+  border-style: dashed;
+}
+
+/* ==================================================== BUGÜNÜN BAŞARISI */
+
+html.pg-black .pg-record {
+  position: relative;
+  margin-bottom: 14px;
+  padding: 12px 13px 11px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    radial-gradient(130% 150% at 100% 0%, rgba(242, 193, 78, 0.12), transparent 58%),
+    linear-gradient(180deg, rgba(23, 27, 39, 0.92), rgba(10, 12, 18, 0.94));
+  overflow: hidden;
+}
+
+html.pg-black .pg-record.is-record {
+  border-color: rgba(242, 193, 78, 0.62);
+  box-shadow: 0 0 0 1px rgba(242, 193, 78, 0.18), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+html.pg-black .pg-record-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+html.pg-black .pg-record-kicker {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f2c14e;
+}
+
+html.pg-black .pg-record-badge {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #241a06;
+  background: linear-gradient(180deg, #ffd479, #f0ad2c);
+  animation: pg-record-pop 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+html.pg-black .pg-record-main {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+html.pg-black .pg-record-icon {
+  font-size: 26px;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
+}
+
+html.pg-black .pg-record-numbers {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+html.pg-black .pg-record-numbers em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-record-numbers strong {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 21px;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  line-height: 1.1;
+}
+
+html.pg-black .pg-record-numbers strong span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6f7996;
+}
+
+html.pg-black .pg-record-prev {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 7px;
+  font-size: 11.5px;
+  color: #8b96b8;
+}
+
+html.pg-black .pg-record-prevday {
+  color: #6f7996;
+}
+
+html.pg-black .pg-bar.record {
+  height: 8px;
+  margin: 8px 0 7px;
+}
+
+html.pg-black .pg-bar.record > span {
+  background: linear-gradient(90deg, #8fc2ff, #4d7ee8);
+  box-shadow: 0 0 12px rgba(120, 170, 255, 0.4);
+}
+
+html.pg-black .pg-record.is-record .pg-bar.record > span {
+  background: linear-gradient(90deg, #ffd479, #f0ad2c);
+  box-shadow: 0 0 14px rgba(255, 212, 121, 0.55);
+}
+
+html.pg-black .pg-record-line {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-record-line.good {
+  color: #bdf3cf;
+}
+
+@keyframes pg-record-pop {
+  from { opacity: 0; transform: scale(0.7) rotate(-6deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* ------------------------------------------------------------- görevler */
+
+html.pg-black .pg-section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+html.pg-black .pg-section-title span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-section-title em {
+  font-style: normal;
+  font-size: 11px;
+  color: #6f7996;
+}
+
+html.pg-black .pg-missions {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 9px;
+}
+
+html.pg-black .pg-mission {
+  padding: 11px 12px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(180deg, rgba(19, 22, 32, 0.85), rgba(10, 12, 18, 0.88));
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+
+html.pg-black .pg-mission.done {
+  border-color: rgba(86, 217, 138, 0.45);
+  box-shadow: 0 0 0 1px rgba(86, 217, 138, 0.12) inset;
+}
+
+html.pg-black .pg-mission.claimed {
+  opacity: 0.66;
+}
+
+html.pg-black .pg-mission-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html.pg-black .pg-mission-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+html.pg-black .pg-mission-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: #ffd479;
+  font-weight: 800;
+}
+
+html.pg-black .pg-mission-desc {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-mission-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+html.pg-black .pg-reward {
+  font-size: 11.5px;
+  color: #8b96b8;
+}
+
+html.pg-black .pg-btn.tiny {
+  margin-left: auto;
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+html.pg-black .pg-btn.tiny:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---------------------------------------------------- istatistik & ayak */
+
+html.pg-black .pg-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 11px;
+}
+
+html.pg-black .pg-stats span {
+  flex: 1 1 30%;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8b96b8;
+}
+
+html.pg-black .pg-stats b {
+  display: block;
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+}
+
+html.pg-black .pg-stats span.combo {
+  border-color: rgba(242, 193, 78, 0.45);
+}
+
+html.pg-black .pg-stats span.combo b {
+  color: #ffd479;
+}
+
+html.pg-black .pg-meta {
+  font-size: 11.5px;
+  color: #6f7996;
+  margin-bottom: 10px;
+}
+
+html.pg-black .pg-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+html.pg-black .pg-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: #c9d2ec;
+}
+
+html.pg-black .pg-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+html.pg-black .pg-switch-track {
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: #10131c;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+html.pg-black .pg-switch-track i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #6b7488;
+  transition: left 0.2s ease, background 0.2s ease;
+}
+
+html.pg-black .pg-switch input:checked + .pg-switch-track {
+  background: linear-gradient(180deg, #ffd479, #f0ad2c);
+  border-color: transparent;
+}
+
+html.pg-black .pg-switch input:checked + .pg-switch-track i {
+  left: 20px;
+  background: #241a06;
+}
+
+html.pg-black .pg-range {
+  flex: 1 1 80px;
+  min-width: 70px;
+  accent-color: #f0ad2c;
+}
+
+html.pg-black .pg-guard {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #bdf3cf;
+  border: 1px solid rgba(86, 217, 138, 0.4);
+  background: rgba(86, 217, 138, 0.08);
+}
+
+html.pg-black .pg-guard.warn {
+  color: #ffd0d0;
+  border-color: rgba(239, 107, 107, 0.5);
+  background: rgba(239, 107, 107, 0.1);
+}
+
+html.pg-black .pg-live {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #56d98a;
+  box-shadow: 0 0 8px rgba(86, 217, 138, 0.8);
+  animation: pg-blink 2.2s ease-in-out infinite;
+}
+
+/* ------------------------------------------------- yerel mod notu */
+
+html.pg-black .pg-note {
+  margin: 0 0 12px;
+  padding: 11px 12px;
+  border-radius: 13px;
+  border: 1px dashed rgba(242, 193, 78, 0.4);
+  background: rgba(242, 193, 78, 0.06);
+  color: #d9dfef;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------- günün zirvesi */
+
+html.pg-black .pg-board {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+}
+
+html.pg-black .pg-board li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 11px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 13px;
+  color: #dfe5f7;
+}
+
+html.pg-black .pg-board li.me {
+  border-color: rgba(242, 193, 78, 0.55);
+  background: rgba(242, 193, 78, 0.09);
+  color: #fff;
+}
+
+html.pg-black .pg-board-rank {
+  width: 18px;
+  text-align: center;
+  font-weight: 800;
+  color: #ffd479;
+}
+
+html.pg-black .pg-board-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html.pg-black .pg-board-pixels {
+  font-variant-numeric: tabular-nums;
+  color: #98a2bd;
+}
+
+html.pg-black .pg-board-empty {
+  justify-content: center;
+  color: #6f7996;
+  border-style: dashed;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------- toasts */
+
+html.pg-black .pg-toasts {
+  position: fixed;
+  /* nabız kapsülü ve panel sağ altta; bildirimler çakışmasın diye sol altta */
+  left: 16px;
+  bottom: 16px;
+  display: grid;
+  gap: 8px;
+  z-index: 24000;
+  pointer-events: none;
+  max-width: min(360px, calc(100vw - 32px));
+}
+
+html.pg-black .pg-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 13px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(21, 25, 37, 0.97), rgba(9, 11, 18, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  color: #e9edf8;
+  animation: pg-toast-in 0.32s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+html.pg-black .pg-toast--good {
+  border-color: rgba(86, 217, 138, 0.45);
+}
+
+html.pg-black .pg-toast--gold {
+  border-color: rgba(242, 193, 78, 0.5);
+  box-shadow: 0 0 0 1px rgba(242, 193, 78, 0.12), 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+html.pg-black .pg-toast--warn {
+  border-color: rgba(239, 107, 107, 0.5);
+}
+
+html.pg-black .pg-toast-icon {
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+html.pg-black .pg-toast-body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+html.pg-black .pg-toast-body strong {
+  font-size: 13.5px;
+  color: #fff;
+}
+
+html.pg-black .pg-toast-body em {
+  font-style: normal;
+  font-size: 12px;
+  color: #98a2bd;
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------ confetti */
+
+html.pg-black .pg-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 23500;
+  overflow: hidden;
+}
+
+html.pg-black .pg-confetti i {
+  position: absolute;
+  top: -12px;
+  width: 7px;
+  height: 11px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: pg-confetti-fall;
+  animation-timing-function: cubic-bezier(0.3, 0.7, 0.4, 1);
+  animation-fill-mode: forwards;
+}
+
+/* ------------------------------------------------------- komut paleti */
+
+html.pg-black .pg-cmd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 26000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh 16px 16px;
+  background: radial-gradient(ellipse at center, rgba(6, 8, 14, 0.72), rgba(0, 0, 0, 0.85));
+  backdrop-filter: blur(6px);
+  animation: pg-fade 0.18s ease both;
+}
+
+html.pg-black .pg-cmd {
+  width: min(620px, 100%);
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(21, 25, 37, 0.99), rgba(9, 11, 18, 1));
+  border: 1px solid rgba(242, 193, 78, 0.32);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  animation: pg-cmd-in 0.24s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+html.pg-black .pg-cmd-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.pg-black .pg-cmd-icon {
+  font-size: 15px;
+  color: #f2c14e;
+}
+
+html.pg-black .pg-cmd-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 4px 0 !important;
+  font-size: 15px;
+  color: #fff !important;
+}
+
+html.pg-black .pg-cmd-online {
+  font-size: 12px;
+  color: #98a2bd;
+  white-space: nowrap;
+}
+
+html.pg-black .pg-cmd-list {
+  list-style: none;
+  margin: 0;
+  padding: 7px;
+  max-height: 52vh;
+  overflow: auto;
+}
+
+html.pg-black .pg-cmd-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #dfe5f7;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+html.pg-black .pg-cmd-item.active {
+  background: linear-gradient(180deg, rgba(242, 193, 78, 0.16), rgba(242, 193, 78, 0.07));
+  border-color: rgba(242, 193, 78, 0.45);
+  color: #fff;
+}
+
+html.pg-black .pg-cmd-item-icon {
+  width: 22px;
+  text-align: center;
+}
+
+html.pg-black .pg-cmd-item-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html.pg-black .pg-cmd-item-group {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6f7996;
+}
+
+html.pg-black .pg-cmd-empty {
+  padding: 22px;
+  text-align: center;
+  color: #6f7996;
+  font-size: 13px;
+}
+
+html.pg-black .pg-cmd-foot {
+  padding: 9px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11.5px;
+  color: #6f7996;
+}
+
+/* --------------------------------------------------------- ekran nabzı */
+
+html.pg-black.pg-pulse-soft::after,
+html.pg-black.pg-pulse-hard::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20500;
+  animation: pg-screen-pulse 0.42s ease-out both;
+}
+
+html.pg-black.pg-pulse-soft::after {
+  background: radial-gradient(ellipse at center, rgba(255, 212, 121, 0.07), transparent 70%);
+}
+
+html.pg-black.pg-pulse-hard::after {
+  background: radial-gradient(ellipse at center, rgba(255, 212, 121, 0.17), transparent 72%);
+}
+
+/* ----------------------------------------------------------- animasyonlar */
+
+@keyframes pg-panel-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pg-slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pg-toast-in {
+  from { opacity: 0; transform: translateX(-18px) scale(0.98); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes pg-cmd-in {
+  from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pg-confetti-fall {
+  0% { opacity: 0; transform: translateY(-10px) rotate(0deg); }
+  12% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(76vh) rotate(540deg); }
+}
+
+@keyframes pg-flame {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(1.13) rotate(3deg); }
+}
+
+@keyframes pg-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes pg-screen-pulse {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@keyframes pg-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.pg-black .pg-pill-flame,
+  html.pg-black .pg-streak-flame,
+  html.pg-black .pg-live-dot,
+  html.pg-black .pg-confetti i {
+    animation: none !important;
+  }
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 720px) {
+  html.pg-black .pg-panel {
+    /* konum pgDock'tan gelir; dar ekranda ekranı doldurur */
+    left: 8px;
+    right: 8px !important;
+    width: auto;
+    max-width: none;
+    max-height: 68vh;
+  }
+
+  html.pg-black .pg-pill {
+    padding: 6px 12px 6px 9px;
+  }
+
+  html.pg-black .pg-chart {
+    height: 92px;
+    padding: 8px 9px 5px;
+    gap: 5px;
+  }
+
+  html.pg-black .pg-record-numbers strong {
+    font-size: 19px;
+  }
+
+  html.pg-black .pg-toasts {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    max-width: none;
+  }
+
+  html.pg-black .pg-stats span {
+    flex: 1 1 45%;
+  }
+}

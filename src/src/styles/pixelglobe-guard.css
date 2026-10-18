@@ -1,0 +1,415 @@
+/* ============================================================================
+   PixelGlobe · Güvenlik ekranı (VPN / Proxy / Tor / Bot)
+   ============================================================================
+   `components/GuardOverlay.jsx` tarafından çizilir. Ekran tam ekran, en üst
+   katmandır ve KAPATILAMAZ: kapatma düğmesi yoktur, Esc / dışına tıklama bir
+   şey yapmaz. Sayfa yenilenince temizlenir.
+   ========================================================================= */
+
+html.pg-black.pg-locked,
+html.pg-black.pg-locked body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+/* kilit altında oyunun kendi arayüzü işaretçi olayı almasın */
+html.pg-locked .pg-pill,
+html.pg-locked .pg-panel,
+html.pg-locked .pg-cmd-overlay,
+html.pg-locked .pg-toasts {
+  display: none !important;
+}
+
+html.pg-locked #viewport,
+html.pg-locked .viewport,
+html.pg-locked #canvaswindow,
+html.pg-locked #topbtnbar,
+html.pg-locked #palettebox,
+html.pg-locked .coorbox,
+html.pg-locked .onlinebox {
+  filter: blur(3px) saturate(0.4) brightness(0.55);
+  pointer-events: none !important;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------- arka plan */
+
+.pg-guard-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 212, 121, 0.16), transparent 62%),
+    radial-gradient(ellipse at 50% 100%, rgba(239, 68, 68, 0.22), transparent 60%),
+    rgba(3, 4, 8, 0.94);
+  backdrop-filter: blur(10px) saturate(0.7);
+  animation: pg-guard-in 0.28s ease-out both;
+  outline: none;
+}
+
+.pg-guard-backdrop--red {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 90, 90, 0.2), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(150, 20, 40, 0.3), transparent 62%),
+    rgba(3, 4, 8, 0.95);
+}
+
+@keyframes pg-guard-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --------------------------------------------------------------- kart */
+
+.pg-guard-card {
+  position: relative;
+  width: min(680px, 100%);
+  padding: 30px 30px 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 212, 121, 0.34);
+  background: linear-gradient(180deg, rgba(22, 25, 36, 0.98), rgba(9, 11, 18, 0.99));
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 0 60px rgba(255, 212, 121, 0.12);
+  color: #e9edf8;
+  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  animation: pg-guard-card-in 0.42s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  overflow: hidden;
+}
+
+.pg-guard-backdrop--red .pg-guard-card {
+  border-color: rgba(239, 120, 120, 0.42);
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.72),
+    0 0 70px rgba(239, 68, 68, 0.18);
+}
+
+@keyframes pg-guard-card-in {
+  from { opacity: 0; transform: translateY(26px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* üstte kayan uyarı şeridi */
+.pg-guard-siren {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: 5px;
+  overflow: hidden;
+}
+
+.pg-guard-siren span {
+  flex: 1;
+  animation: pg-guard-siren 1.6s linear infinite;
+  background: linear-gradient(90deg, #ffd479, #ef6b6b);
+  opacity: 0.5;
+}
+
+.pg-guard-siren span:nth-child(2) { animation-delay: 0.4s; }
+.pg-guard-siren span:nth-child(3) { animation-delay: 0.8s; }
+.pg-guard-siren span:nth-child(4) { animation-delay: 1.2s; }
+
+@keyframes pg-guard-siren {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.95; }
+}
+
+.pg-guard-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.pg-guard-icon {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  flex: 0 0 auto;
+  border-radius: 20px;
+  font-size: 34px;
+  background: linear-gradient(180deg, rgba(255, 212, 121, 0.22), rgba(255, 212, 121, 0.06));
+  border: 1px solid rgba(255, 212, 121, 0.4);
+  box-shadow: 0 12px 30px rgba(255, 212, 121, 0.16);
+  animation: pg-guard-pulse 2.1s ease-in-out infinite;
+}
+
+.pg-guard-backdrop--red .pg-guard-icon {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.24), rgba(239, 68, 68, 0.05));
+  border-color: rgba(239, 68, 68, 0.44);
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pg-guard-pulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.04); }
+}
+
+.pg-guard-kicker {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #ffd479;
+  margin-bottom: 4px;
+}
+
+.pg-guard-backdrop--red .pg-guard-kicker { color: #ff9b9b; }
+
+.pg-guard-card h2 {
+  margin: 0;
+  font-size: clamp(21px, 4.2vw, 30px);
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 6px 24px rgba(255, 212, 121, 0.24);
+}
+
+.pg-guard-backdrop--red .pg-guard-card h2 {
+  text-shadow: 0 6px 26px rgba(239, 68, 68, 0.32);
+}
+
+.pg-guard-body {
+  margin: 0 0 16px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #c9d2ec;
+}
+
+/* -------------------------------------------------------------- adımlar */
+
+.pg-guard-steps {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  counter-reset: pg-step;
+}
+
+.pg-guard-steps li {
+  position: relative;
+  padding: 11px 14px 11px 44px;
+  border-radius: 13px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #eaf0ff;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  counter-increment: pg-step;
+}
+
+.pg-guard-steps li::before {
+  content: counter(pg-step);
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #10131c;
+  background: linear-gradient(180deg, #ffe6ad, #f0ad2c);
+}
+
+.pg-guard-backdrop--red .pg-guard-steps li::before {
+  color: #fff;
+  background: linear-gradient(180deg, #ff9b9b, #d33);
+}
+
+/* -------------------------------------------------------------- durum */
+
+.pg-guard-status {
+  padding: 11px 14px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.pg-guard-status--idle {
+  background: rgba(255, 212, 121, 0.09);
+  border: 1px solid rgba(255, 212, 121, 0.28);
+  color: #ffe6ad;
+}
+
+.pg-guard-status--bad {
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ffc9c9;
+  animation: pg-guard-shake 0.4s ease;
+}
+
+.pg-guard-status--good {
+  background: rgba(86, 217, 138, 0.14);
+  border: 1px solid rgba(86, 217, 138, 0.42);
+  color: #bdf3cf;
+}
+
+@keyframes pg-guard-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.pg-guard-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.pg-guard-meta span {
+  padding: 5px 10px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9fabcb;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ------------------------------------------------------------- bulgular */
+
+.pg-guard-evidence {
+  margin-bottom: 16px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 10px 14px;
+}
+
+.pg-guard-evidence summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #9fabcb;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pg-guard-evidence ul {
+  margin: 10px 0 2px;
+  padding-left: 18px;
+}
+
+.pg-guard-evidence li {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #8d97b5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* -------------------------------------------------------------- eylemler */
+
+.pg-guard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pg-guard-btn {
+  padding: 11px 20px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 212, 121, 0.5);
+  background: linear-gradient(180deg, #ffe6ad, #f0ad2c);
+  color: #14100a;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.pg-guard-backdrop--red .pg-guard-btn {
+  border-color: rgba(255, 150, 150, 0.5);
+  background: linear-gradient(180deg, #ffb3b3, #e04545);
+  color: #1a0606;
+}
+
+.pg-guard-btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.pg-guard-btn:disabled { opacity: 0.65; cursor: progress; }
+
+.pg-guard-lock {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8d97b5;
+}
+
+/* ------------------------------------------------------------------- neden */
+
+.pg-guard-why {
+  display: grid;
+  gap: 5px;
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+}
+
+.pg-guard-why strong {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #c9d2ec;
+}
+
+.pg-guard-why em,
+.pg-guard-why span {
+  font-style: normal;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #8d97b5;
+}
+
+/* alt taraftaki ince canlı şerit (ekranın açık olduğunu hatırlatır) */
+.pg-guard-timer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255, 212, 121, 0.5), rgba(239, 107, 107, 0.6));
+  animation: pg-guard-timer 4s linear infinite;
+}
+
+@keyframes pg-guard-timer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+/* ---------------------------------------------------------- hareket azalt */
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-guard-backdrop,
+  .pg-guard-card,
+  .pg-guard-icon,
+  .pg-guard-siren span,
+  .pg-guard-timer {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .pg-guard-card { padding: 22px 18px 20px; border-radius: 20px; }
+  .pg-guard-icon { width: 54px; height: 54px; font-size: 28px; border-radius: 16px; }
+  .pg-guard-body { font-size: 13.5px; }
+  .pg-guard-actions { flex-direction: column; align-items: stretch; }
+  .pg-guard-btn { width: 100%; }
+}

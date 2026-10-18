@@ -1,0 +1,287 @@
+:root {
+  --control-bg-selected: #b20707;
+  --control-bg-highlight: #dc660e;
+  --control-bg: #92b0e8;
+  --button-bg-pressed: #b57b7b;
+  --menu-bg: rgba(222, 158, 158, 0.95);
+}
+
+body {
+  font-weight: bold; 
+}
+
+.tab-list {
+  border-bottom: 1px solid #a50029;
+}
+
+.tab-list-item:not(.active):hover {
+  background-color: #6A8ED1;
+}
+
+.tab-list-item.active {
+  background-color: #0743B2;
+  color: #ffffff;
+  border: solid #a50029;
+}
+
+td, th {
+  border: 1px solid #f0f;
+}
+
+h2 {
+  color:#fffacd;
+  font-weight: bold;
+}
+
+h3 {
+  color: #ffc2c2;
+  font-weight: bold;
+}
+
+.win-resize {
+  color: #cbcbcb;
+}
+
+h4 {
+  color: #ffc2c2;
+  font-weight: Bold;
+  font-size: 20px;
+}
+
+.win-title {
+  border: solid #330033;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.win-topbtn {
+  border: solid #330033;
+  background-color: #827000;
+  color: white;
+}
+
+.win-topbtn.close:hover {
+  background-color: #92b0e8;
+}
+
+tr:nth-child(even) {
+  background-color: #3b3618;
+}
+tr:nth-child(odd) {
+  background-color: #380a0c;
+}
+
+.channelbtn {
+  background-color: #CE0000;
+  border-color: black;
+  color: #fff;
+}
+
+.cvbtn:hover {
+  background: rgba(0,0,0,0.2); 
+}
+
+.onlinebox {
+  background-color: rgba(206, 0, 0, 0.80);
+}
+
+.cooldownbox{
+  background-color: rgba(255, 255, 255, 0.80);
+  color: black;
+}
+
+#palettebox {
+  background-color: rgb(99 16 16 / 80%);
+}
+
+.actionbuttons, .coorbox {
+  background-color: rgb(206 92 0 / 80%);
+  color: black;
+}
+
+.deletelistitem.selected {
+  background-color: #8c5e5e;
+}
+
+.deletelistitem.unselected:hover {
+  background-color: #7d5f5f;
+}
+
+#helpbutton {
+  background-color: rgb(112 0 0 / 80%);
+  color: white;
+}
+
+#settingsbutton {
+  background-color: rgb(162 0 0 / 80%);
+}
+
+#loginbutton {
+  background-color: rgb(112 0 0 / 80%);
+  color: white;
+}
+
+#downloadbutton {
+  background-color: rgb(162 0 0 / 80%);
+}
+
+#chatbutton {
+  background-color: rgb(162 0 0 / 80%);
+  color: white;
+}
+
+.historyselect {
+  background-color: rgba(7, 67, 178, 0.80);
+  color: white;
+}
+
+#helpbutton:hover, #settingsbutton:hover, #loginbutton:hover, #downloadbutton:hover, #chatbutton:hover {
+  background-color: #ff1818f2;
+}
+
+.modal, .Alert, .popup-modal {
+  background: rgb(68,2,2);
+  background-image: url(/pumpkin-texture.png);
+  background-size: cover;
+  color: #cb4646;
+}
+
+.window, .popup {
+  background: rgb(28,2,2);
+  background: linear-gradient(180deg, rgba(93,9,9,1) 0%, rgba(28,2,2,1) 10%, rgba(28,2,2,1) 90%, rgba(93,9,9,1) 100%);
+}
+
+.modal-content, .win-content, .popup-content, .baninfo {
+  font-size: 19px;
+  font-weight: bold;
+  color: #cb4646;
+}
+
+.modaldesc {
+  color: #e2e2e2;
+}
+
+
+.modaldivider {
+  background-color: hsla(300, 96%, 40%, .3); /*pink*/
+}
+
+.modallink {
+  color: #7da8ff;
+}
+
+
+.modalinfo, .tmpitm-desc span {
+  color: #c9abab;
+  font-size: 20px;
+  font-weight: 500, bold;
+}
+
+.modalcvtext, .tmpitm-desc {
+  color: #e2e2e2;
+}
+
+.overlay {
+  background-color: rgba(255, 255, 204, 0.4);
+}
+
+.chatname {
+  max-width: 115px; 
+  background-color: inherit;
+}
+
+.mention {
+  background-color: #3f380f;
+}
+
+.chatts {
+  color: #b38b8b;
+}
+
+.chatmsg:hover {
+  background-color: #692a2a;
+}
+
+.msg {
+  color: #f0f0f0;
+}
+
+.msg:hover
+{
+  color: #ffffff;
+}
+
+.msg.info {
+  color: #CE0000;
+}
+
+.msg.event {
+  color: #0743B2;
+}
+
+.msg.greentext{
+  color: #00cc00;
+}
+.popup-fsbtn {
+  color: #666363;
+  background: linear-gradient(45deg, transparent 0%, transparent 50%, #373636 60%);
+}
+.popup-fsbtn:hover {
+  color: #bfb9b9;
+}
+
+.ping {
+  background-color: #EB9999;
+}
+
+.chn {
+  background-color: #CE0000;
+  border-bottom: solid bold #ff00ff;
+  padding: 3px;
+  font-size: 17px;
+}
+
+.chn.selected, .chn:hover, .channelbtn.selected, .channelbtn:hover, button:hover {
+  background-color: #E78080;
+}
+
+button {
+  background-color: #CE0000;
+  color: white;
+}
+
+.statvalue {
+  color: #ff49ff;
+}
+
+.actionbuttons:hover, .onlinebox:hover {
+  background-color: #ff1818f2; 
+}
+
+.coorbox:hover{
+  background-color: #FFEC80cc;
+}
+
+.onlinebox:hover{
+  background-color: #E26666cc;
+}
+
+.react-toggle-track {
+  background-color: #CE0000;
+}
+
+.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #FFD900;
+}
+
+.react-toggle--checked .react-toggle-track {
+  background-color: #0743B2;
+}
+
+.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #FFD900;
+}
+
+.c-last-hour {
+  color: lime;
+}

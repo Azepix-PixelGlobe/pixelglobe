@@ -1,0 +1,502 @@
+/* ==========================================================================
+   PixelGlobe Minimap — canlı dünya haritası paneli + kapsül
+   --------------------------------------------------------------------------
+   Tüm kurallar html.pg-black altında: katman tek satırla kapatılabilir.
+   Görsel dil, Nabız paneliyle aynı: siyah cam yüzey + altın vurgu.
+   Panel varsayılan olarak sol üstte, #info kutusunun altında durur
+   (konum JS'ten gelir: components/MiniMap.jsx → dockAnchor).
+   ========================================================================== */
+
+html.pg-black {
+  --pg-mm-pill-w: 352px;
+  --pg-mm-radius: 18px;
+  --pg-mm-backdrop: radial-gradient(120% 120% at 20% 0%, #12182a 0%, #080a12 55%, #05070d 100%);
+}
+
+/* ------------------------------------------------------------- kapsül */
+
+html.pg-black .pg-mm-pill {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 20990;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 193, 78, 0.38);
+  background: linear-gradient(180deg, rgba(24, 29, 44, 0.96), rgba(8, 10, 16, 0.98));
+  color: #f4e7c8;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(242, 193, 78, 0.07);
+  animation: pg-mm-pop 0.34s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+html.pg-black .pg-mm-pill:hover {
+  border-color: rgba(255, 212, 121, 0.9);
+  transform: translateY(-1px);
+}
+
+html.pg-black .pg-mm-pill-globe {
+  font-size: 15px;
+  filter: drop-shadow(0 0 6px rgba(255, 200, 90, 0.35));
+}
+
+html.pg-black .pg-mm-pill-label {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+html.pg-black .pg-mm-pill-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: #7ee3a8;
+  background: rgba(38, 168, 104, 0.14);
+  border: 1px solid rgba(74, 214, 137, 0.34);
+}
+
+html.pg-black .pg-mm-pill-live i,
+html.pg-black .pg-mm-badge--live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #58e08e;
+  box-shadow: 0 0 8px rgba(88, 224, 142, 0.9);
+}
+
+html.pg-black .pg-mm-pill-live[data-live='on'] i,
+html.pg-black .pg-mm-badge--live[data-on='on'] i {
+  animation: pg-mm-beat 1.15s ease-in-out infinite;
+}
+
+html.pg-black .pg-mm-pill-live[data-live='off'] {
+  color: rgba(220, 232, 255, 0.55);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.pg-black .pg-mm-pill-live[data-live='off'] i {
+  background: rgba(200, 214, 240, 0.5);
+  box-shadow: none;
+}
+
+html.pg-black .pg-mm-pill-chevron {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------- panel */
+
+html.pg-black .pg-mm-panel {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 20995;
+  max-width: calc(100vw - 20px);
+  border-radius: var(--pg-mm-radius);
+  border: 1px solid rgba(242, 193, 78, 0.3);
+  background: var(--pg-mm-backdrop);
+  color: #eef3ff;
+  font: inherit;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  animation: pg-mm-in 0.32s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  overflow: hidden;
+}
+
+html.pg-black .pg-mm-panel.dragging {
+  cursor: grabbing;
+  border-color: rgba(255, 212, 121, 0.75);
+}
+
+/* ---------------------------------------------------------------- başlık */
+
+html.pg-black .pg-mm-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 9px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+html.pg-black .pg-mm-head-icon {
+  font-size: 17px;
+  filter: drop-shadow(0 0 8px rgba(140, 200, 255, 0.45));
+}
+
+html.pg-black .pg-mm-titles {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+html.pg-black .pg-mm-kicker {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #ffd479;
+}
+
+html.pg-black .pg-mm-titles strong {
+  font-size: 13.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.pg-black .pg-mm-titles em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: rgba(214, 226, 250, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.pg-black .pg-mm-head-actions {
+  display: inline-flex;
+  gap: 4px;
+}
+
+html.pg-black .pg-mm-icon {
+  width: 26px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #000;                     /* siteler kuralı: butonlar siyah */
+  color: #e9eefc;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 0.16s ease, transform 0.16s ease, color 0.16s ease;
+}
+
+html.pg-black .pg-mm-icon:hover {
+  border-color: rgba(255, 212, 121, 0.8);
+  color: #ffd479;
+  transform: translateY(-1px);
+}
+
+html.pg-black .pg-mm-icon--close:hover {
+  border-color: rgba(233, 110, 110, 0.85);
+  color: #ff8f8f;
+}
+
+/* ------------------------------------------------------------ harita alanı */
+
+html.pg-black .pg-mm-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  background: #05070d;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: crosshair;
+  touch-action: none;
+  outline: none;
+}
+
+html.pg-black .pg-mm-map:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(255, 212, 121, 0.55);
+}
+
+html.pg-black .pg-mm-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: auto;
+}
+
+html.pg-black .pg-mm-overlaycanvas {
+  pointer-events: none;
+}
+
+/* açılışta radar taraması hissi */
+html.pg-black .pg-mm-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 26%;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%,
+    rgba(190, 230, 255, 0.16) 60%, rgba(255, 255, 255, 0.28) 100%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: pg-mm-scan 1.5s cubic-bezier(0.35, 0.75, 0.25, 1) 0.05s 1 both;
+}
+
+html.pg-black .pg-mm-badges {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+html.pg-black .pg-mm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  background: rgba(4, 7, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(4px);
+}
+
+html.pg-black .pg-mm-badge--live {
+  color: #7ee3a8;
+  border-color: rgba(74, 214, 137, 0.36);
+}
+
+html.pg-black .pg-mm-badge--live[data-on='off'] {
+  color: rgba(214, 228, 252, 0.55);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.pg-black .pg-mm-badge--snap {
+  color: rgba(226, 236, 255, 0.78);
+  max-width: 62%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+html.pg-black .pg-mm-badge--snap.snap--loading {
+  color: #ffd479;
+  border-color: rgba(255, 212, 121, 0.4);
+}
+
+html.pg-black .pg-mm-badge--snap.snap--ready {
+  color: #8fd0ff;
+  border-color: rgba(120, 190, 255, 0.4);
+}
+
+/* ---------------------------------------------------------------- altlık */
+
+html.pg-black .pg-mm-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: rgba(220, 232, 255, 0.66);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+html.pg-black .pg-mm-coords {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 92px;
+  color: #cfe0ff;
+  font-variant-numeric: tabular-nums;
+}
+
+html.pg-black .pg-mm-stat {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+html.pg-black .pg-mm-stat--live {
+  color: #ffd479;
+  border-color: rgba(255, 212, 121, 0.26);
+}
+
+html.pg-black .pg-mm-tools {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 11px 11px;
+}
+
+html.pg-black .pg-mm-tools button {
+  padding: 6px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #000;
+  color: #eef3ff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+html.pg-black .pg-mm-tools button:hover {
+  border-color: rgba(255, 212, 121, 0.8);
+  color: #ffd479;
+  transform: translateY(-1px);
+}
+
+html.pg-black .pg-mm-hint {
+  flex: 1 1 auto;
+  text-align: right;
+  font-size: 9.8px;
+  line-height: 1.25;
+  color: rgba(206, 220, 248, 0.5);
+}
+
+/* ------------------------------------ canlı katman: zoom + durum göstergesi */
+
+html.pg-black .pg-mm-badge--zoom {
+  color: #ffd479;
+  border-color: rgba(255, 212, 121, 0.34);
+  font-variant-numeric: tabular-nums;
+}
+
+/* canlı tile katmanı hazır: yeşil; yükleniyor: sarı; kapalı: gri */
+html.pg-black .pg-mm-badge--snap.live--ready {
+  color: #7ee3a8;
+  border-color: rgba(74, 214, 137, 0.34);
+}
+
+html.pg-black .pg-mm-badge--snap.live--loading {
+  color: #ffd479;
+  border-color: rgba(255, 212, 121, 0.4);
+}
+
+html.pg-black .pg-mm-badge--snap.live--off {
+  color: rgba(214, 228, 252, 0.6);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* zoom kumandası: [−] [1x] [+] — tek parça gibi görünür */
+html.pg-black .pg-mm-zoom {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+html.pg-black .pg-mm-zoom button {
+  border: 0;
+  border-radius: 0;
+  min-width: 28px;
+  padding: 6px 8px;
+  background: #000;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+html.pg-black .pg-mm-zoom button + button {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+html.pg-black .pg-mm-zoom button:disabled {
+  color: rgba(206, 220, 248, 0.3);
+  cursor: default;
+  transform: none;
+}
+
+html.pg-black .pg-mm-zoom button.pg-mm-zoom-chip {
+  min-width: 42px;
+  font-size: 11px;
+  color: #ffd479;
+  font-variant-numeric: tabular-nums;
+}
+
+/* panel altındaki "canlı" vaadi */
+html.pg-black .pg-mm-hintline {
+  margin: 0;
+  padding: 0 11px 10px;
+  font-size: 9.8px;
+  line-height: 1.35;
+  color: rgba(206, 220, 248, 0.52);
+}
+
+html.pg-black .pg-mm-foot .pg-mm-stat {
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- animasyon */
+
+@keyframes pg-mm-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pg-mm-pop {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pg-mm-beat {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.7); }
+}
+
+@keyframes pg-mm-scan {
+  0% { opacity: 0; transform: translateY(-30%); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(320%); }
+}
+
+/* --------------------------------------------------------------- mobil */
+
+@media (max-width: 640px) {
+  html.pg-black .pg-mm-panel,
+  html.pg-black .pg-mm-pill {
+    max-width: calc(100vw - 20px);
+  }
+
+  html.pg-black .pg-mm-tools {
+    flex-wrap: wrap;
+  }
+
+  html.pg-black .pg-mm-hint {
+    display: none;
+  }
+
+  html.pg-black .pg-mm-hintline {
+    display: none;
+  }
+
+  html.pg-black .pg-mm-foot {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.pg-black .pg-mm-panel,
+  html.pg-black .pg-mm-pill { animation: none; }
+  html.pg-black .pg-mm-scan { animation: none; opacity: 0; }
+  html.pg-black .pg-mm-pill-live i,
+  html.pg-black .pg-mm-badge--live i { animation: none; }
+}

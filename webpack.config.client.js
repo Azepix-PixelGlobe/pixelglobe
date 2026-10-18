@@ -1,0 +1,286 @@
+/**
+ * webpack config for client files
+ */
+
+import fs from 'fs';
+import path from 'path';
+import webpack from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import sourceMapping from './scripts/sourceMapping.js';
+import LicenseListWebpackPlugin from './scripts/LicenseListWebpackPlugin.cjs';
+
+/*
+ * make sure we build in root dir
+ */
+process.chdir(import.meta.dirname);
+
+const pkg = JSON.parse(
+  fs.readFileSync(path.resolve('package.json')),
+);
+
+const SOURCE_DIR = path.resolve('src', 'src');
+const I18N_DIR = path.resolve('i18n');
+
+export default ({ development, analyze }) => {
+  const babelPlugins = [];
+  /*
+   * In development mode, we resolve translations to the default english.
+   * In production mode we remove the ttag import and build the tags into the
+   * bundle (as if they would be globals) and then resolve translations in
+   * post-processing to build language based bundles.
+   *
+   * NOTE: The production output bundle isn't useable without processing it
+   * first
+   */
+  if (development || analyze) {
+    babelPlugins.push([
+      'ttag', { resolve: { translations: 'default' } },
+    ]);
+  } else {
+    babelPlugins.push([
+      'ttag', {
+        extract: { output: path.join(I18N_DIR, 'template.pot') },
+        addComments: 't:',
+        sortByMsgid: true,
+      },
+    ]);
+    babelPlugins.push([
+      'transform-remove-imports', { 'test': '^ttag$' },
+    ]);
+  }
+
+  return {
+    name: 'client',
+    target: 'web',
+
+    mode: (development) ? 'development' : 'production',
+    devtool: (development) ? 'source-map' : false,
+
+    entry: {
+      client:
+        [path.join(SOURCE_DIR, 'client.js')],
+      globe:
+        [path.join(SOURCE_DIR, 'globe.js')],
+      popup:
+        [path.join(SOURCE_DIR, 'popup.js')],
+    },
+
+    output: {
+      path: path.resolve('dist', 'public', 'assets'),
+      publicPath: '/assets/',
+      /*
+       * chunkReason is set if it is a split chunk like vendor or three, which
+       * will not include any translation strings.
+       * All other js assets will get the language attached to their name, with
+       * a WPLANGCODE placer if its in production, because we postprocess that,
+       * and generate language bundles out of it.
+       */
+      filename: (pathData) => (pathData.chunk.chunkReason)
+        ? '[name].[chunkhash:8].js'
+        : `[name].${
+          (development || analyze) ? 'en' : 'WPLANGCODE'
+        }.[chunkhash:8].js`,
+      chunkFilename: `[name].${
+        (development || analyze) ? 'en' : 'WPLANGCODE'
+      }.[chunkhash:8].js`,
+    },
+
+    resolve: {
+      alias: {
+        /*
+         * if we don't do that,we might load different versions of three
+         */
+        three: path.resolve('node_modules', 'three'),
+      },
+      extensions: ['.js', '.jsx'],
+    },
+
+    module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          use: [
+            'babel-loader',
+            {
+              loader: '@svgr/webpack',
+              options: {
+                icon: true,
+                svgProps: {
+                  className: 'svgr-icon',
+                  fill: 'currentColor',
+                },
+                /*
+                 * don't add any jsx imports, let our babel config handle it
+                 */
+                babel: false,
+                jsxRuntime: 'automatic',
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(js|jsx)$/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                plugins: babelPlugins,
+              },
+            },
+          ],
+          include: [
+            SOURCE_DIR,
+            ...['image-q'].map((moduleName) => (
+              path.resolve('node_modules', moduleName)
+            )),
+          ],
+        },
+      ],
+    },
+
+    plugins: [
+      // Define free variables
+      // https://webpack.github.io/docs/list-of-plugins.html#defineplugin
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': development ? '"development"' : '"production"',
+        'process.env.BROWSER': true,
+        'process.env.PKG_NAME': `"${pkg.name}"`,
+        'process.env.PKG_VERSION': `"${pkg.version}"`,
+      }),
+      // Output license informations
+      new LicenseListWebpackPlugin({
+        name: 'Client Scripts',
+        htmlFilename: 'index.html',
+        outputDir: path.join('..', 'legal'),
+        includeLicenseFiles: true,
+        override: sourceMapping,
+        processOutput: (out) => {
+          /*
+           * add language scripts that might be built later
+           */
+          const clientScripts = out.find(
+            ({ name }) => name === 'Client Scripts',
+          ).scripts;
+          const scriptAmount = clientScripts.length;
+          const langs = fs.readdirSync(I18N_DIR)
+            .filter((e) => (e.endsWith('.po') && !e.startsWith('ssr')))
+            .map((l) => l.slice(0, -3));
+          for (let i = 0; i < scriptAmount; i += 1) {
+            const script = clientScripts[i];
+            if (script.url.includes('.en.')) {
+              for (let j = 0; j < langs.length; j += 1) {
+                const replaceStr = '.' + langs[j] + '.';
+                clientScripts.push({
+                  ...script,
+                  assets: script.assets.map(({ name, url }) => ({
+                    name: name.replace('.en.', replaceStr),
+                    url: url.replace('.en.', replaceStr),
+                  })),
+                  url: script.url.replace('.en.', replaceStr),
+                });
+              }
+            }
+          }
+          /*
+           * build a second summarized html output, because LibreJS doesn't
+           * understand this and we still want it
+           * TODO: replace it with the mergeByChunnkName option once LibreJS
+           *       supports it
+           */
+          let secondOut = out.map((buildObj) => {
+            const newBuildObj = {
+              ...buildObj,
+              scripts: [],
+            };
+            buildObj.scripts.forEach((scriptObj) => {
+              let targetInd = newBuildObj.scripts.findIndex(
+                (s) => s.name === scriptObj.name,
+              );
+              if (targetInd === -1) {
+                newBuildObj.scripts.push({ ...scriptObj, url: null });
+              } else {
+                newBuildObj.scripts[targetInd] = LicenseListWebpackPlugin
+                  .deepMergeNamedArrays(
+                    newBuildObj.scripts[targetInd],
+                    { ...scriptObj, url: null },
+                  );
+              }
+            });
+            return newBuildObj;
+          });
+          secondOut = LicenseListWebpackPlugin.summarizeOutput(secondOut);
+          secondOut = LicenseListWebpackPlugin.generateHTML(secondOut);
+          fs.writeFileSync(
+            path.resolve('dist', 'public', 'legal', 'summarized.html'),
+            secondOut,
+          );
+          return out;
+        },
+      }),
+      // Webpack Bundle Analyzer
+      // https://github.com/th0r/webpack-bundle-analyzer
+      ...analyze ? [new BundleAnalyzerPlugin({ analyzerPort: 8889 })] : [],
+    ],
+
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        name: false,
+        cacheGroups: {
+          default: false,
+          defaultVendors: false,
+
+          /*
+           * this layout of chunks is also assumed in src/core/assets.js
+           * client -> client.js + vendor.js
+           * globe -> globe.js + three.js
+           */
+          vendor: {
+            name: 'vendor',
+            chunks: (chunk) => chunk.name.startsWith('client'),
+            test: /[\\/]node_modules[\\/]/,
+            priority: 5,
+          },
+          pvendor: {
+            name: 'pvendor',
+            chunks: (chunk) => chunk.name.startsWith('popup'),
+            test: /[\\/]node_modules[\\/]/,
+          },
+          three: {
+            name: 'three',
+            chunks: 'all',
+            test: /[\\/]node_modules[\\/]three[\\/]/,
+          },
+        },
+      },
+      /*
+       * we post-process the bundle in production ourselves, so no need for
+       * minimization here
+       */
+      minimize: !!analyze,
+    },
+
+    recordsPath: path.resolve('records.json'),
+
+    stats: {
+      colors: true,
+      reasons: false,
+      hash: false,
+      version: false,
+      chunkModules: false,
+    },
+
+    performance: {
+      /*
+       * since we minimize in production in post processing, those hints
+       * are useless
+       */
+      hints: false,
+    },
+
+    cache: {
+      type: 'filesystem',
+    },
+  };
+};
+

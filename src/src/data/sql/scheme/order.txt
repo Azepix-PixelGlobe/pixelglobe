@@ -1,0 +1,15 @@
+# this is the order in which files get executed when syncing
+# only files mentioned here will get executes
+users.sql
+configs.sql
+ips.sql
+captchas.sql
+userips.sql
+bans.sql
+sessions.sql
+chat.sql
+media.sql
+oidc.sql
+factions.sql
+profiles.sql
+goodies.sql

@@ -1,0 +1,717 @@
+/*
+ * Nora Tour — styles for the first-visit guided tour.
+ * Gold / midnight look to match the rest of the site.
+ *
+ * The dim + spotlight layer never captures pointer events, so the player can
+ * keep tapping the real game UI while the tour is running.
+ */
+
+.nora-root {
+  position: fixed;
+  inset: 0;
+  z-index: 30000;
+  pointer-events: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------- spotlight */
+
+.nora-dim {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 18, 0.74);
+  pointer-events: none;
+  animation: nora-fade 0.25s ease both;
+}
+
+.nora-hole {
+  position: fixed;
+  border-radius: 16px;
+  box-shadow: 0 0 0 9999px rgba(5, 8, 18, 0.74);
+  pointer-events: none;
+  z-index: 1;
+  transition: top 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    left 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    width 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    height 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.nora-ring {
+  position: fixed;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 212, 121, 0.92);
+  box-shadow:
+    0 0 0 7px rgba(242, 193, 78, 0.14),
+    0 0 34px rgba(242, 193, 78, 0.32);
+  pointer-events: none;
+  z-index: 2;
+  animation: nora-pulse 1.7s ease-in-out infinite;
+  transition: top 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    left 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    width 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    height 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    border-color 0.2s ease;
+}
+
+.nora-ring.done {
+  border-color: #7ee08a;
+  box-shadow:
+    0 0 0 8px rgba(126, 224, 138, 0.16),
+    0 0 40px rgba(126, 224, 138, 0.4);
+  animation: nora-pop 0.5s ease;
+}
+
+/* "tap here" bubble */
+.nora-taphint {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  background: linear-gradient(180deg, #ffd97e, #f0ad2c);
+  color: #241a06;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 6px 12px;
+  border-radius: 10px;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 4;
+  animation: nora-bounce 1.25s ease-in-out infinite;
+}
+
+.nora-taphint::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  background: #f0ad2c;
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.nora-taphint.inside {
+  transform: none;
+  animation: nora-pulse-soft 1.6s ease-in-out infinite;
+}
+
+.nora-taphint.inside::after {
+  display: none;
+}
+
+.nora-taphint-check {
+  margin-right: 6px;
+}
+
+.nora-check {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: #7ee08a;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 4;
+  animation: nora-pop 0.45s ease;
+}
+
+/* ------------------------------------------------------------ tooltip card */
+
+.nora-card {
+  position: fixed;
+  pointer-events: auto;
+  background: linear-gradient(165deg, rgba(22, 27, 48, 0.97), rgba(10, 13, 25, 0.985));
+  border: 1px solid rgba(242, 193, 78, 0.36);
+  border-radius: 18px;
+  padding: 13px 16px 12px;
+  color: #e8eefc;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 70px rgba(242, 193, 78, 0.07);
+  z-index: 5;
+  animation: nora-card-in 0.34s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  cursor: pointer;
+}
+
+.nora-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.nora-progress span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd479, #f0a52c);
+  box-shadow: 0 0 12px rgba(255, 212, 121, 0.6);
+  transition: width 0.35s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.nora-avatar {
+  position: absolute;
+  left: 8px;
+  bottom: -4px;
+  width: 132px;
+  height: 178px;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.55));
+  animation: nora-float 5s ease-in-out infinite;
+}
+
+.nora-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.nora-content {
+  padding-left: 142px;
+  min-height: 150px;
+}
+
+.nora-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #f6c85a;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nora-crown {
+  color: #f6c85a;
+  flex: 0 0 auto;
+}
+
+.nora-title {
+  margin: 6px 0 7px;
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.nora-text {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.58;
+  color: #d4dbf0;
+}
+
+.nora-caret {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  margin-left: 3px;
+  vertical-align: -2px;
+  background: #ffd479;
+  animation: nora-blink 0.9s steps(1) infinite;
+}
+
+.nora-note {
+  margin-top: 9px;
+  padding-left: 9px;
+  border-left: 2px solid rgba(126, 224, 138, 0.65);
+  font-size: 12.5px;
+  color: #9fd8a6;
+}
+
+.nora-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+}
+
+.nora-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: 0;
+  padding: 7px 4px;
+  color: #97a0c0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.nora-skip:hover {
+  color: #ffffff;
+}
+
+.nora-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.nora-step {
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  color: #99a3c4;
+}
+
+.nora-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.nora-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.nora-btn.ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.13);
+  color: #dfe5f7;
+}
+
+.nora-btn.ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.nora-btn.primary {
+  background: linear-gradient(180deg, #ffd479, #f0ad2c);
+  color: #241a06;
+  box-shadow: 0 8px 22px rgba(242, 177, 46, 0.34);
+}
+
+.nora-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(242, 177, 46, 0.42);
+}
+
+/* --------------------------------------------------------- language gate */
+
+.nora-gate {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(31, 41, 82, 0.94), rgba(4, 6, 14, 0.98));
+  backdrop-filter: blur(7px);
+  pointer-events: auto;
+  z-index: 30010;
+  animation: nora-fade 0.3s ease both;
+  overflow: auto;
+}
+
+.nora-gate-orbits {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.nora-gate-orbits::before,
+.nora-gate-orbits::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150vmax;
+  height: 150vmax;
+  margin: -75vmax;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 193, 78, 0.1);
+  animation: nora-orbit 34s linear infinite;
+}
+
+.nora-gate-orbits::after {
+  width: 105vmax;
+  height: 105vmax;
+  margin: -52.5vmax;
+  border-color: rgba(120, 170, 255, 0.09);
+  animation-duration: 22s;
+  animation-direction: reverse;
+}
+
+.nora-gate-card {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  width: min(900px, 100%);
+  padding: 22px 26px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(23, 29, 54, 0.97), rgba(10, 13, 25, 0.985));
+  border: 1px solid rgba(242, 193, 78, 0.34);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.62),
+    0 0 100px rgba(242, 193, 78, 0.08);
+  color: #e8eefc;
+  animation: nora-card-in 0.42s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.nora-gate-art {
+  position: relative;
+  flex: 0 0 250px;
+  width: 250px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.nora-gate-halo {
+  position: absolute;
+  bottom: -14px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 193, 78, 0.22), rgba(242, 193, 78, 0) 62%);
+  animation: nora-glow 4s ease-in-out infinite;
+}
+
+.nora-gate-img {
+  position: relative;
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.55));
+  animation: nora-float 5.4s ease-in-out infinite;
+}
+
+.nora-gate-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 6px 4px;
+}
+
+.nora-gate-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f6c85a;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.nora-gate-hello {
+  margin: 12px 0 6px;
+  font-size: 27px;
+  line-height: 1.22;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.nora-gate-hello-sub {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: #98a3c6;
+}
+
+.nora-gate-ask {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 13px;
+}
+
+.nora-gate-ask strong {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e9edfb;
+}
+
+.nora-gate-ask span {
+  font-size: 12.5px;
+  color: #8b96b8;
+}
+
+.nora-gate-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nora-gate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e8ecfa;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.nora-gate-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nora-gate-btn.primary {
+  border-color: transparent;
+  background: linear-gradient(180deg, #ffd479, #efab27);
+  color: #241a06;
+  box-shadow: 0 12px 28px rgba(242, 177, 46, 0.35);
+}
+
+.nora-gate-btn.primary:hover {
+  box-shadow: 0 14px 32px rgba(242, 177, 46, 0.45);
+}
+
+.nora-gate-later {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #8f9ab9;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+.nora-gate-later:hover {
+  color: #dfe5f7;
+}
+
+.nora-gate-meta {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #7f8aab;
+}
+
+/* ------------------------------------------------------- resume helper */
+
+.nora-resume {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 193, 78, 0.4);
+  background: linear-gradient(180deg, rgba(29, 35, 62, 0.97), rgba(13, 17, 32, 0.985));
+  color: #f0e3c2;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 29000;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  animation: nora-card-in 0.35s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.nora-resume:hover {
+  border-color: rgba(255, 212, 121, 0.75);
+}
+
+.nora-resume img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top center;
+  background: rgba(242, 193, 78, 0.14);
+}
+
+.nora-resume-dot {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #f2c14e;
+  color: #241a06;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* ------------------------------------------------------------- animations */
+
+@keyframes nora-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nora-card-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes nora-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes nora-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.62; }
+}
+
+@keyframes nora-pop {
+  0% { transform: scale(0.9); opacity: 0.2; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes nora-bounce {
+  0%, 100% { transform: translate(-50%, -100%); }
+  50% { transform: translate(-50%, -118%); }
+}
+
+@keyframes nora-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.72; }
+}
+
+@keyframes nora-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes nora-glow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes nora-orbit {
+  to { transform: rotate(360deg); }
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 780px) {
+  .nora-card {
+    padding: 12px 13px 11px;
+  }
+
+  .nora-avatar {
+    left: 6px;
+    bottom: -2px;
+    width: 96px;
+    height: 128px;
+  }
+
+  .nora-content {
+    padding-left: 104px;
+    min-height: 112px;
+  }
+
+  .nora-title {
+    font-size: 17px;
+  }
+
+  .nora-text {
+    font-size: 13.5px;
+  }
+
+  .nora-nav {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .nora-gate-card {
+    flex-direction: column;
+    align-items: center;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .nora-gate-art {
+    flex: 0 0 auto;
+    width: 190px;
+  }
+
+  .nora-gate-img {
+    max-height: 240px;
+  }
+
+  .nora-gate-halo {
+    width: 210px;
+    height: 210px;
+  }
+
+  .nora-gate-hello {
+    font-size: 21px;
+  }
+
+  .nora-gate-name,
+  .nora-gate-btns {
+    justify-content: center;
+  }
+
+  .nora-gate-ask {
+    align-items: center;
+  }
+
+  .nora-gate-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 430px) {
+  .nora-avatar {
+    width: 78px;
+    height: 104px;
+  }
+
+  .nora-content {
+    padding-left: 84px;
+    min-height: 96px;
+  }
+
+  .nora-btn {
+    padding: 8px 13px;
+    font-size: 13px;
+  }
+
+  .nora-step {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nora-avatar,
+  .nora-gate-img,
+  .nora-gate-halo,
+  .nora-ring,
+  .nora-taphint,
+  .nora-gate-orbits::before,
+  .nora-gate-orbits::after {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,36 @@
+
+.window {
+  border-radius: 5px;
+}
+
+.channeldd-category {
+  border-radius: 3px;
+}
+
+.channeldd {
+  border-radius: 5px;
+}
+
+.menu, .menuelement {
+  border-radius: 10px;
+}
+
+.actionbuttons, .coorbox, .onlinebox, .cooldownbox, .historyselect {
+  border-radius: 21px;
+}
+
+.modal, .popup-modal {
+  border-radius: 21px;
+}
+
+.popup-fsbtn {
+  border-radius: 0 21px 0 0;
+}
+
+.Alert {
+  border-radius: 12px;
+}
+
+.notifybox {
+  border-radius: 21px;
+}

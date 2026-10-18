@@ -6,6 +6,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat-square" alt="GPL-3.0"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node"></a>
   <a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/redis-7.x-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis"></a>
+  <a href="https://discord.gg/XWvCePwtUZ"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://mariadb.org"><img src="https://img.shields.io/badge/mariadb-10.x-003545?style=flat-square&logo=mariadb&logoColor=white" alt="MariaDB"></a>
   <img src="https://img.shields.io/badge/canvas-65536x65536-7c3aed?style=flat-square" alt="Canvas">
   <img src="https://img.shields.io/badge/pixels-∞-06b6d4?style=flat-square" alt="Pixels">
@@ -24,7 +25,7 @@
   <a href="#-configuration">Config</a> •
   <a href="#-api">API</a> •
   <a href="#-contributing">Contributing</a> •
-  <a href="https://discord.gg">Discord</a>
+  <a href="https://discord.gg/XWvCePwtUZ">Discord</a>
 </p>
 
 ---
@@ -215,6 +216,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
 **GPL-3.0** — same as [`pixelplanetdev/pixelplanet`](https://github.com/pixelplanetdev/pixelplanet). You are free to host your own instance, but you **must open-source** your changes under the same license if you distribute.
 
 See [LICENSE](LICENSE).
+
+---
+
+### 💬 Community
+
+Join us on Discord for support, events and faction wars:
+
+**👉 https://discord.gg/XWvCePwtUZ**
 
 ---
 

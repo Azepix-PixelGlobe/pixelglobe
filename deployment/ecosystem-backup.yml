@@ -1,0 +1,4 @@
+apps:
+  - script   : ./backup.js
+    name     : 'ppfun-backups'
+    node_args: --nouse-idle-notification --expose-gc

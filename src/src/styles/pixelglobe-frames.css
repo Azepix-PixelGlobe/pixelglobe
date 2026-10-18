@@ -1,0 +1,309 @@
+/*
+ * PixelGlobe — hareketli avatar çerçeveleri (DarkNitro tarzı kozmetikler)
+ * ======================================================================
+ * Her çerçeve `.avatar-frame-<anahtar>` sınıfıdır ve avatarın İÇİNDE duran
+ * `.avatar-frame-ring` elemanını + avatara bağlı `::after` ışıma katmanını
+ * kullanır. Hiçbir ek DOM gerekmez; böylece sohbetteki eski yerleşim kuralları
+ * bozulmaz (avatar hâlâ aynı kutu, sadece üstünde halkalar var).
+ *
+ * Kural: efektler sadece `transform / opacity / filter / background-position`
+ * kullanır — layout tetiklemez, 200 mesajlık sohbette bile akıcı kalır.
+ *
+ * "Hareketi azalt" (prefers-reduced-motion) seçili oyuncuda animasyonlar durur
+ * ama çerçeve yine görünür (statik halka kalır), yani kozmetik kaybolmaz.
+ */
+
+.avatar {
+  /* halkanın kalınlığı: büyük avatarlarda (mağaza önizlemesi, profil) artırılır */
+  --pg-frame-ring: 3px;
+  --pg-frame-gap: 2px;
+  position: relative;
+  border-radius: 50%;
+}
+
+.avatar > .avatar-frame-ring {
+  position: absolute;
+  inset: calc(-1 * (var(--pg-frame-ring) + var(--pg-frame-gap)));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  /* halkayı içi boş bırak: ortada avatar görünsün */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--pg-frame-ring) - 0.5px),
+    #000 calc(100% - var(--pg-frame-ring))
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--pg-frame-ring) - 0.5px),
+    #000 calc(100% - var(--pg-frame-ring))
+  );
+}
+
+/* ortak ışıma katmanı: avatara bağlı ::after */
+[class*='avatar-frame-']::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * (var(--pg-frame-ring) + var(--pg-frame-gap) + 1px));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+}
+
+@keyframes pg-frame-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pg-frame-spin-rev {
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes pg-frame-flicker {
+  0% { filter: brightness(1) saturate(1); }
+  45% { filter: brightness(1.5) saturate(1.3); }
+  55% { filter: brightness(0.85) saturate(1.1); }
+  100% { filter: brightness(1.25) saturate(1.2); }
+}
+
+@keyframes pg-frame-glow {
+  0% { opacity: 0.55; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes pg-frame-shine {
+  0% { transform: rotate(0deg); opacity: 0; }
+  15% { opacity: 0.9; }
+  60% { opacity: 0; }
+  100% { transform: rotate(360deg); opacity: 0; }
+}
+
+@keyframes pg-frame-jitter {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-1px, 0); }
+  80% { transform: translate(1px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes pg-frame-flash {
+  0%, 62%, 100% { opacity: 0.35; }
+  66%, 74% { opacity: 1; }
+  70% { opacity: 0.5; }
+}
+
+@keyframes pg-frame-bubble {
+  0% { transform: translateY(20%) scale(0.6); opacity: 0; }
+  35% { opacity: 0.9; }
+  100% { transform: translateY(-70%) scale(1.05); opacity: 0; }
+}
+
+@keyframes pg-frame-hue {
+  to { filter: hue-rotate(360deg); }
+}
+
+/* ------------------------------------------------------------------ ❄️ buz */
+.avatar-frame-frost > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #7fdcff, #f2fdff, #3f9bff, #d8f4ff, #7fdcff);
+  animation: pg-frame-spin 6s linear infinite;
+}
+
+.avatar-frame-frost::after {
+  background: conic-gradient(from 140deg, transparent 0 62%, rgba(255, 255, 255, 0.95) 70%, transparent 78%);
+  animation: pg-frame-spin 2.6s linear infinite;
+  box-shadow: 0 0 9px 2px rgba(127, 220, 255, 0.45);
+}
+
+/* ---------------------------------------------------------------- 🔥 alev */
+.avatar-frame-flame > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #ff2d00, #ff9500, #ffe11a, #ff4d00, #7a0b00, #ff2d00);
+  animation: pg-frame-spin 1.9s linear infinite, pg-frame-flicker 0.42s ease-in-out infinite alternate;
+  box-shadow: 0 0 10px 2px rgba(255, 122, 24, 0.6);
+}
+
+.avatar-frame-flame::after {
+  box-shadow: 0 0 14px 4px rgba(255, 90, 0, 0.55), 0 0 26px 8px rgba(255, 170, 0, 0.22);
+  animation: pg-frame-glow 0.5s ease-in-out infinite alternate;
+}
+
+/* ---------------------------------------------------------------- ☢️ zehir */
+.avatar-frame-toxic > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #1fbf3a, #a6ff3d, #0c7a2a, #6bf06b, #1fbf3a);
+  animation: pg-frame-spin 4.2s linear infinite, pg-frame-flicker 1.1s ease-in-out infinite alternate;
+  box-shadow: 0 0 10px 2px rgba(107, 240, 107, 0.5);
+}
+
+.avatar-frame-toxic::after {
+  background:
+    radial-gradient(circle at 30% 82%, rgba(166, 255, 61, 0.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 62% 88%, rgba(107, 240, 107, 0.85) 0 1.6px, transparent 3px),
+    radial-gradient(circle at 78% 78%, rgba(200, 255, 120, 0.8) 0 1.4px, transparent 3px);
+  animation: pg-frame-bubble 2.2s linear infinite;
+}
+
+/* --------------------------------------------------------------- 📺 glitch */
+.avatar-frame-glitch > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #ff2fd0, #00e5ff, #ff2fd0, #7a00ff, #ff2fd0);
+  animation: pg-frame-spin 3s steps(12) infinite, pg-frame-jitter 1.4s steps(2, end) infinite;
+}
+
+.avatar-frame-glitch::after {
+  inset: calc(-1 * (var(--pg-frame-ring) + var(--pg-frame-gap) + 2px));
+  background: conic-gradient(from 90deg, transparent 0 20%, rgba(255, 47, 208, 0.75) 26%, transparent 34% 60%, rgba(0, 229, 255, 0.75) 68%, transparent 76%);
+  mix-blend-mode: screen;
+  animation: pg-frame-spin 1.1s steps(8) infinite, pg-frame-flash 1.7s steps(1) infinite;
+}
+
+/* ---------------------------------------------------------------- 💡 neon */
+.avatar-frame-neon > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #9d6bff, #4dd6ff, #c77dff, #4d7cff, #9d6bff);
+  animation: pg-frame-spin 3.6s linear infinite;
+}
+
+.avatar-frame-neon::after {
+  box-shadow:
+    0 0 8px 2px rgba(157, 107, 255, 0.75),
+    0 0 16px 5px rgba(77, 214, 255, 0.4),
+    0 0 28px 10px rgba(157, 107, 255, 0.18);
+  animation: pg-frame-glow 1.5s ease-in-out infinite alternate;
+}
+
+/* -------------------------------------------------------------- ⚡ şimşek */
+.avatar-frame-storm > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #7fb6ff, #ffffff, #3a6bff, #e8f4ff, #7fb6ff);
+  animation: pg-frame-spin 2.2s linear infinite;
+}
+
+.avatar-frame-storm::after {
+  box-shadow: 0 0 10px 3px rgba(127, 182, 255, 0.8), 0 0 22px 7px rgba(255, 255, 255, 0.25);
+  background: conic-gradient(from 210deg, transparent 0 70%, rgba(255, 255, 255, 0.9) 74%, transparent 79%);
+  animation: pg-frame-flash 2.4s steps(1) infinite, pg-frame-spin 1.3s linear infinite;
+}
+
+/* -------------------------------------------------------------- 🌌 galaksi */
+.avatar-frame-galaxy > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #2a0a4a, #a26bff, #4a1a8a, #ff6bd6, #1a0a3a, #a26bff);
+  animation: pg-frame-spin 8s linear infinite;
+  box-shadow: 0 0 11px 3px rgba(162, 107, 255, 0.45);
+}
+
+.avatar-frame-galaxy::after {
+  background:
+    radial-gradient(circle at 18% 26%, #fff 0 1.2px, transparent 2px),
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 66%, #ffd6ff 0 1.1px, transparent 2px),
+    radial-gradient(circle at 34% 82%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
+    radial-gradient(circle at 54% 52%, rgba(255, 255, 255, 0.7) 0 0.9px, transparent 2px);
+  mix-blend-mode: screen;
+  animation: pg-frame-spin-rev 5s linear infinite;
+}
+
+/* -------------------------------------------------------------- 🏆 altın */
+.avatar-frame-gold > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #8a5a00, #ffd479, #fff3c4, #f0ad2c, #8a5a00);
+  animation: pg-frame-spin 3s linear infinite;
+  box-shadow: 0 0 10px 2px rgba(255, 212, 121, 0.55);
+}
+
+.avatar-frame-gold::after {
+  background: conic-gradient(from 20deg, transparent 0 66%, rgba(255, 255, 255, 0.95) 72%, transparent 78%);
+  animation: pg-frame-shine 2.2s linear infinite;
+  box-shadow: 0 0 12px 3px rgba(240, 173, 44, 0.5);
+}
+
+/* ---------------------------------------------------------- 🕳️ kara delik */
+.avatar-frame-void > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #000000, #c04bff, #1a0030, #ff2fd0, #000000);
+  animation: pg-frame-spin 2.6s linear infinite, pg-frame-flicker 1.8s ease-in-out infinite alternate;
+}
+
+.avatar-frame-void::after {
+  box-shadow:
+    0 0 10px 3px rgba(192, 75, 255, 0.6),
+    0 0 22px 9px rgba(255, 47, 208, 0.22);
+  animation: pg-frame-glow 2.4s ease-in-out infinite alternate;
+}
+
+/* --------------------------------------------------------------- 🌈 prizma */
+.avatar-frame-prisma > .avatar-frame-ring {
+  background: conic-gradient(from 0deg, #ff4d4d, #ffb84d, #ffe94d, #56d98a, #4dd6ff, #6b6bff, #c04bff, #ff4d9d, #ff4d4d);
+  animation: pg-frame-spin 2.6s linear infinite, pg-frame-hue 6s linear infinite;
+}
+
+.avatar-frame-prisma::after {
+  background: conic-gradient(from 0deg, rgba(255, 77, 157, 0.75), rgba(77, 214, 255, 0.75), rgba(255, 233, 77, 0.7), rgba(255, 77, 157, 0.75));
+  mix-blend-mode: screen;
+  filter: blur(3px);
+  animation: pg-frame-spin 2.6s linear infinite, pg-frame-hue 6s linear infinite;
+}
+
+/* ------------------------------------------------- büyük avatar (profil) */
+.pg-hero-avatar {
+  position: relative;
+}
+
+.pg-hero-avatar {
+  --pg-frame-ring: 4px;
+  --pg-frame-gap: 3px;
+}
+
+.pg-hero-avatar > .avatar-frame-ring {
+  position: absolute;
+  inset: calc(-1 * (var(--pg-frame-ring) + var(--pg-frame-gap)));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.pg-hero-avatar[class*='avatar-frame-']::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * (var(--pg-frame-ring) + var(--pg-frame-gap) + 2px));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ------------------------------------------- mağaza önizlemesi (büyük demo) */
+.pg-mk-frame-demo {
+  display: grid;
+  place-items: center;
+  padding: 10px 0 6px;
+}
+
+.pg-mk-frame-demo .avatar {
+  --pg-frame-ring: 4px;
+  --pg-frame-gap: 3px;
+  width: 58px;
+  height: 58px;
+  font-size: 22px;
+  background: radial-gradient(circle at 32% 26%, #33333f, #13131b 72%);
+  color: #8f8fa8;
+}
+
+.pg-mk-frame-demo-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7d7d96;
+}
+
+/* --------------------------------------------------- hareketi azalt modu */
+@media (prefers-reduced-motion: reduce) {
+  .avatar-frame-frost > .avatar-frame-ring,
+  .avatar-frame-flame > .avatar-frame-ring,
+  .avatar-frame-toxic > .avatar-frame-ring,
+  .avatar-frame-glitch > .avatar-frame-ring,
+  .avatar-frame-neon > .avatar-frame-ring,
+  .avatar-frame-storm > .avatar-frame-ring,
+  .avatar-frame-galaxy > .avatar-frame-ring,
+  .avatar-frame-gold > .avatar-frame-ring,
+  .avatar-frame-void > .avatar-frame-ring,
+  .avatar-frame-prisma > .avatar-frame-ring,
+  [class*='avatar-frame-']::after {
+    animation: none !important;
+  }
+}

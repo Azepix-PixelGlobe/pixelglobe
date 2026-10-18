@@ -1,0 +1,12 @@
+-- User-IP Association
+
+CREATE TABLE IF NOT EXISTS UserIPs (
+  ip varbinary(8) NOT NULL,
+  uid int unsigned NOT NULL,
+  lastSeen datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (ip,uid),
+  KEY uid (uid),
+  CONSTRAINT UserIPs_ibfk_1 FOREIGN KEY (ip) REFERENCES IPs (ip) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT UserIPs_ibfk_2 FOREIGN KEY (uid) REFERENCES Users (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
