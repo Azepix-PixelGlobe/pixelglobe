@@ -229,7 +229,7 @@ Join us on Discord for support, events and faction wars:
 
 ### 🙏 Credits
 
-- Original idea & base: [pixelplanetdev/pixelplanet](https://github.com/pixelplanetdev/pixelplanet) — Thank you!
+- Original idea & base: [TheRdMelon/pixelplanet](https://github.com/TheRdMelon/pixelplanet) — Thank you!
 - PixelGlobe team — minimap, admin, paste fix, live engine
 - Community — for every pixel placed ❤️
 
