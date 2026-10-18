@@ -15,7 +15,7 @@
 <h1 align="center">PixelGlobe — Place pixels. Create worlds. Dominate.</h1>
 
 <p align="center">
-  The official open-source repository of <a href="https://pixelglobe.fun"><b>pixelglobe.fun</b></a><br>
+  The official open-source repository of <a href="https://pixelglobe.fun"><b>pixelglobee.gt.tc</b></a><br>
   A collaborative pixel canvas inspired by <b>r/place</b> and <b>pixelplanet.fun</b> — rebuilt, faster, and open.
 </p>
 
