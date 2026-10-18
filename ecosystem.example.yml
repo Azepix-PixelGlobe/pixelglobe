@@ -1,0 +1,32 @@
+apps:
+  - name: pixelglobe
+    script: ./build/server.js
+    cwd: ./
+    instances: 1
+    exec_mode: fork
+    watch: false
+    max_memory_restart: 800M
+    env:
+      NODE_ENV: production
+
+      # ── Necessary ──────────────────────────────
+      PORT: 80
+      HOST: 127.0.0.1
+      REDIS_URL: redis://localhost:6379
+      MARIADB_HOST: localhost
+      MARIADB_DATABASE: pixelglobe
+      MARIADB_USER: pixelglobe
+      MARIADB_PW: changeme
+      COOKIE_SECRET: change-me-to-openssl-rand-base64-32
+
+      # ── Optional ───────────────────────────────
+      # BASENAME: ""
+      # CDN_URL: ""
+      # ADMIN_IDS: "1,2,3"
+      # CAPTCHA_TIME: 30
+      # BLOCK_PROXIES: true
+      # USE_PROXYCHECK: false
+      # PROXYCHECK_KEY: ""
+      # BACKUP_URL: ""
+      # CONTACT_ADDRESS: admin@pixelglobe.fun
+      # MAIL_ADDRESS: donotreply@pixelglobe.fun
