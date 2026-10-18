@@ -31,7 +31,7 @@ All tests must pass (`0 failures`) before a PR is accepted.
 ## Reporting Bugs / Security
 
 - **Bugs:** Open an issue with steps to reproduce + expected vs actual.
-- **Security:** Please email `security@pixelglobe.fun` **privately**. Do not open a public issue for exploits.
+- **Security:** Please email `easdhjd@gmail.com` **privately**. Do not open a public issue for exploits.
 
 ## Where to Start?
 
