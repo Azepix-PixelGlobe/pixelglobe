@@ -7,6 +7,8 @@
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node"></a>
   <a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/redis-7.x-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis"></a>
   <a href="https://discord.gg/XWvCePwtUZ"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://github.com/Azepix-PixelGlobe/pixelglobe/commits/main"><img src="https://img.shields.io/badge/status-actively%20developed-brightgreen?style=flat-square" alt="Actively Developed"></a>
+  <a href="https://github.com/Azepix-PixelGlobe/pixelglobe/releases"><img src="https://img.shields.io/badge/version-v1.0.0-blue?style=flat-square" alt="Version"></a>
   <a href="https://mariadb.org"><img src="https://img.shields.io/badge/mariadb-10.x-003545?style=flat-square&logo=mariadb&logoColor=white" alt="MariaDB"></a>
   <img src="https://img.shields.io/badge/canvas-65536x65536-7c3aed?style=flat-square" alt="Canvas">
   <img src="https://img.shields.io/badge/pixels-∞-06b6d4?style=flat-square" alt="Pixels">
@@ -15,9 +17,13 @@
 <h1 align="center">PixelGlobe — Place pixels. Create worlds. Dominate.</h1>
 
 <p align="center">
-  The official open-source repository of <a href="https://pixelglobe.fun"><b>pixelglobee.gt.tc</b></a><br>
-  A collaborative pixel canvas inspired by <b>r/place</b> and <b>pixelplanet.fun</b> — rebuilt, faster, and open.
+  <b>The official open-source repository of <a href="https://pixelglobee.gt.tc">pixelglobee.gt.tc</a> — Actively Developed • October 2026</b><br>
+  A collaborative pixel canvas inspired by <b>r/place</b> and <b>pixelplanet.fun</b> — rebuilt, faster, and open.<br>
+  <sub>🚀 <b>One of the newest pixel sites of 2026</b> — not a normal pixel site: packed with 20+ exclusive features (Live Minimap, 3D Globe, Voice Chat, Mega Admin, Factions, Market, Chaos Events & more)</sub>
 </p>
+
+> **🔥 Aktif Geliştiriliyor / Actively Maintained** — PixelGlobe is a **PixelPlanet clone, but next-generation**. We push updates daily (see <a href="https://github.com/Azepix-PixelGlobe/pixelglobe/commits/main">commits</a>). En yeni pixel sitelerinden biriyiz, sıradan bir pixel sitesi değiliz — içinde barındırdığımız onlarca özellik ile en dolu pixel deneyimini sunuyoruz. / We are one of the newest pixel canvas sites — not a normal pixel site, but a feature-packed universe.
+
 
 <p align="center">
   <a href="#-features">Features</a> •
@@ -32,7 +38,11 @@
 
 ### ✨ What is PixelGlobe?
 
-PixelGlobe is a **massively collaborative pixel art experiment**. A huge world map (65k × 65k) and a 3D globe where anyone can place a pixel, build alliances, draw flags, meme, or wage faction wars — **together, in real time**.
+> **✅ Active Development — Last update: 20 Oct 2026 — Daily commits & open roadmap on Discord**
+
+PixelGlobe is a **massively collaborative pixel art experiment — and one of the newest pixel sites of 2026**. A huge world map (65k × 65k) and a 3D globe where anyone can place a pixel, build alliances, draw flags, meme, or wage faction wars — **together, in real time**.
+
+**PixelPlanet klonu? Evet, ama çok daha fazlası.** Normal bir pixel sitesi değil — PixelGlobe içinde canlı minimap, 3D küre, sesli sohbet, mega moderasyon, market, çark, faction savaşları, kaos eventleri ve daha fazlası var. / **Yes, a PixelPlanet clone — but reimagined as a next-gen platform, not a plain clone.**
 
 > Born from the spirit of r/place's 2nd anniversary, reimagined for the next generation: no paywalls, no closed beta, 100% open source.
 
@@ -224,6 +234,14 @@ See [LICENSE](LICENSE).
 Join us on Discord for support, events and faction wars:
 
 **👉 https://discord.gg/XWvCePwtUZ**
+
+---
+
+### 🔍 Keywords
+
+`pixelglobe` `pixelplanet` `pixelplanet.fun` `r/place` `place` `canvas` `pixel art` `collaborative canvas` `open source pixel game` `node.js` `redis` `mariadb`
+
+> If you search **pixelglobe** on GitHub and don't see us, star ⭐ the repo — GitHub search indexes new repos within 24-48h. Direct link: **https://github.com/Azepix-PixelGlobe/pixelglobe**
 
 ---
 
